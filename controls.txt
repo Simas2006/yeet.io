@@ -1,0 +1,8 @@
+Yeet - swipe left/right
+Pitchfork - swipe left/right twice
+Haybarn - swipe up
+Send snake - swipe down + left/right
+Jump over snake - tap screen when below
+Catch snake - swipe down when below
+You're a star - tap player slice
+I'm a superstar - tap screen when asked
