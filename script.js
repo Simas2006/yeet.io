@@ -1,13 +1,28 @@
 var canvas,ctx;
 var xDown,yDown;
 var downTrigger = false;
-var index = 0;
+var energyIndex = 2;
 
 function renderGame() {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
-  ctx.strokeStyle = "black";
+  ctx.fillStyle = "#444444";
   ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.strokeStyle = "black";
+  ctx.strokeRect(0,0,canvas.width,canvas.height);
+  var positions = [[0,-2],[1,-1],[2,0],[1,1],[0,2],[-1,1],[-2,0],[-1,-1]];
+  ctx.strokeStyle = "black";
+  for ( var i = 0; i < 8; i++ ) {
+    ctx.fillStyle = ["red","orange","green","blue","purple","black","white","brown"][i];
+    ctx.beginPath();
+    ctx.arc(canvas.width / 2 + positions[i][0] * (canvas.width * 0.19),canvas.height / 2 + positions[i][1] * (canvas.width * 0.19),canvas.width / 10,0,2 * Math.PI);
+    ctx.fill();
+    ctx.stroke();
+  }
+  ctx.fillStyle = "yellow";
+  ctx.beginPath();
+  ctx.arc(canvas.width / 2 + positions[energyIndex][0] * (canvas.width * 0.19),canvas.height / 2 + positions[energyIndex][1] * (canvas.width * 0.19),canvas.width / 30,0,2 * Math.PI);
+  ctx.fill();
 }
 
 window.ontouchstart = function(event) {
@@ -24,16 +39,15 @@ window.ontouchmove = function(event) {
   var yDiff = yDown - yUp;
   if ( Math.abs(xDiff) > Math.abs(yDiff) ) {
     if ( xDiff > 0 ) {
-      document.getElementById("text").innerText = "left " + index;
-      index++;
+
     } else {
-      document.getElementById("text").innerText = "right";
+
     }
   } else {
     if ( yDiff > 0 ) {
-      document.getElementById("text").innerText = "up";
+
     } else {
-      document.getElementById("text").innerText = "down";
+
     }
   }
 }
@@ -45,4 +59,5 @@ window.ontouchend = function(event) {
 window.onload = function() {
   canvas = document.getElementById("canvas");
   ctx = canvas.getContext("2d");
+  setInterval(renderGame,10);
 }
