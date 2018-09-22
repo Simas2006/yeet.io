@@ -2,6 +2,7 @@ var canvas,ctx;
 var xDown,yDown;
 var downTrigger = false;
 var energyIndex = 0;
+var energyOverride = [-1,-1];
 var energyTick = 0;
 var energyMode = -1;
 
@@ -15,10 +16,11 @@ function renderGame() {
   ctx.lineWidth = 20;
   var positions = [[0,-2],[1,-1],[2,0],[1,1],[0,2],[-1,1],[-2,0],[-1,-1]];
   ctx.strokeStyle = "black";
+  var min = Math.min(canvas.width,canvas.height);
   for ( var i = 0; i < 8; i++ ) {
     ctx.fillStyle = ["#c60000","orange","green","#000090","purple","black","white","#8b4513"][i];
     ctx.beginPath();
-    ctx.arc(canvas.width / 2 + positions[i][0] * (canvas.width * 0.19),canvas.height / 2 + positions[i][1] * (canvas.width * 0.19),canvas.width / 10,0,2 * Math.PI);
+    ctx.arc(canvas.width / 2 + positions[i][0] * (canvas.width * 0.19),canvas.height / 2 + positions[i][1] * (canvas.height * 0.19),min / 10,0,2 * Math.PI);
     ctx.fill();
     ctx.stroke();
   }
@@ -32,12 +34,30 @@ function renderGame() {
     red += (256 / size) * redMultiplier;
     if ( red < 200 ) redMultiplier = 1;
     ctx.beginPath();
-    ctx.arc(canvas.width / 2 + positions[energyIndex][0] * (canvas.width * 0.19),canvas.height / 2 + positions[energyIndex][1] * (canvas.width * 0.19),i,0,2 * Math.PI);
+    ctx.arc(energyOverride[0] <= -1 ? (canvas.width / 2 + positions[energyIndex][0] * (canvas.width * 0.19)) : energyOverride[0],energyOverride[0] <= -1 ? (canvas.height / 2 + positions[energyIndex][1] * (canvas.height * 0.19)) : energyOverride[1],i,0,2 * Math.PI);
     ctx.stroke();
   }
   if ( energyTick <= 0 ) energyMode = 1;
   if ( energyTick >= 256 ) energyMode = -1;
   energyTick += 7 * energyMode;
+}
+
+function moveEnergy(index) {
+  var positions = [[0,-2],[1,-1],[2,0],[1,1],[0,2],[-1,1],[-2,0],[-1,-1]];
+  var oldPos = [canvas.width / 2 + positions[energyIndex][0] * (canvas.width * 0.19),canvas.height / 2 + positions[energyIndex][1] * (canvas.height * 0.19)];
+  var newPos = [canvas.width / 2 + positions[index][0] * (canvas.width * 0.19),canvas.height / 2 + positions[index][1] * (canvas.height * 0.19)];
+  energyOverride = oldPos;
+  var xDiff = newPos[0] - oldPos[0];
+  var yDiff = newPos[1] - oldPos[1];
+  var interval = setInterval(function() {
+    energyOverride[0] += xDiff / 100;
+    energyOverride[1] += yDiff / 100;
+    if ( Math.abs(energyOverride[0] - newPos[0]) < 2.5 && Math.abs(energyOverride[1] - newPos[1]) < 2.5 ) {
+      energyIndex = index;
+      energyOverride[0] = -1;
+      clearInterval(interval);
+    }
+  },10);
 }
 
 window.ontouchstart = function(event) {
