@@ -11,8 +11,19 @@ function renderGame() {
   canvas.height = window.innerHeight;
   ctx.fillStyle = "#222222";
   ctx.fillRect(0,0,canvas.width,canvas.height);
-  ctx.strokeStyle = "black";
-  ctx.strokeRect(0,0,canvas.width,canvas.height);
+  ctx.strokeStyle = "#aaaaaa";
+  for ( var x = 0; x < canvas.width; x += 30 ) {
+    ctx.beginPath();
+    ctx.moveTo(x,0);
+    ctx.lineTo(x,canvas.height);
+    ctx.stroke();
+  }
+  for ( var y = 0; y < canvas.height; y += 30 ) {
+    ctx.beginPath();
+    ctx.moveTo(0,y);
+    ctx.lineTo(canvas.width,y);
+    ctx.stroke();
+  }
   ctx.lineWidth = 20;
   var positions = [[0,-2],[1,-1],[2,0],[1,1],[0,2],[-1,1],[-2,0],[-1,-1]];
   ctx.strokeStyle = "black";
