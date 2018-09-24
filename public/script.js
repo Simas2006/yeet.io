@@ -1,17 +1,15 @@
 var canvas,ctx;
-var xDown,yDown;
-var downTrigger = false;
+var xDown,yDown,xLast,yLast;
 var energyIndex = 0;
 var energyOverride = [-1,-1];
 var energyTick = 0;
 var energyMode = -1;
+var io = io();
 
 function renderGame() {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
   ctx.fillStyle = "#222222";
   ctx.fillRect(0,0,canvas.width,canvas.height);
-  ctx.strokeStyle = "#aaaaaa";
+  ctx.strokeStyle = "#4a4a4a";
   for ( var x = 0; x < canvas.width; x += 30 ) {
     ctx.beginPath();
     ctx.moveTo(x,0);
@@ -39,7 +37,7 @@ function renderGame() {
   var red = energyTick;
   var green = energyTick;
   var redMultiplier = -1;
-  var size = canvas.width / 30;
+  var size = min / 30;
   for ( var i = Math.round(size); i > 0; i-- ) {
     ctx.strokeStyle = `rgb(${red},${green},0)`;
     red += (256 / size) * redMultiplier;
@@ -71,14 +69,14 @@ function moveEnergy(index) {
   },10);
 }
 
+function log(msg) { io.emit("log",msg) }
+
 window.ontouchstart = function(event) {
   xDown = event.touches[0].clientX;
   yDown = event.touches[0].clientY;
 }
 
 window.ontouchmove = function(event) {
-  if ( ! xDown || ! yDown || downTrigger ) return;
-  downTrigger = true;
   var xUp = event.touches[0].clientX;
   var yUp = event.touches[0].clientY;
   var xDiff = xDown - xUp;
@@ -105,5 +103,7 @@ window.ontouchend = function(event) {
 window.onload = function() {
   canvas = document.getElementById("canvas");
   ctx = canvas.getContext("2d");
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
   setInterval(renderGame,10);
 }

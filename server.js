@@ -7,7 +7,9 @@ var PORT = process.argv[2] || 8000;
 app.use("/public",express.static(__dirname + "/public"));
 
 io.on("connection",function(socket) {
-  console.log("a user connected");
+  socket.on("log",function(msg) {
+    console.log(`[LOG] ${msg}`);
+  });
 });
 
 http.listen(PORT,function() {
